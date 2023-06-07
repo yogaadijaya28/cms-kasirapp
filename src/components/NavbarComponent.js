@@ -1,5 +1,12 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => {
+  return {
+    dataTitle: state.users.brandTitle,
+  };
+};
 
 const NavbarComponent = (props) => {
   return (
@@ -18,4 +25,4 @@ const NavbarComponent = (props) => {
   );
 };
 
-export default NavbarComponent;
+export default connect(mapStateToProps, null)(NavbarComponent);

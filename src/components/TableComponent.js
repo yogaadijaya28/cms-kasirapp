@@ -1,13 +1,20 @@
-import { faEdit, faInfo, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faInfo,
+  faTrash,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {
   Search,
 } from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+
 const { SearchBar } = Search;
 
 const columns = [
@@ -58,14 +65,12 @@ const columns = [
             <Button variant="dark" className="mr-2">
               <FontAwesomeIcon icon={faInfo} /> Detail
             </Button>
-          </Link> {" "}
-
+          </Link>{" "}
           <Link to={"edit/" + row.id}>
             <Button variant="dark" className="mr-2">
               <FontAwesomeIcon icon={faEdit} /> Edit
             </Button>
           </Link>{" "}
-          
           <Button variant="dark" className="mr-2">
             <FontAwesomeIcon icon={faTrash} /> Delete
           </Button>{" "}
@@ -82,36 +87,65 @@ const defaultSorted = [
   },
 ];
 
+const mapStateToProps = (state) => {
+  return {
+    getUsersList: state.users.getUsersList,
+    errorUsersList: state.users.errorUsersList,
+  };
+};
+
 const TableComponent = (props) => {
   return (
     <Container>
-      <ToolkitProvider
-        bootstrap4
-        keyField="id"
-        data={props.users}
-        columns={columns}
-        defaultSorted={defaultSorted}
-        search
-      >
-        {(props) => (
-          <div>
-            <div className="float-end">
-              <SearchBar
-                {...props.searchProps}
-                placeholder="Search ..."
-                style={{ marginBottom: "10px" }}
+      {props.getUsersList ? (
+        <ToolkitProvider
+          bootstrap4
+          keyField="id"
+          data={props.getUsersList}
+          columns={columns}
+          defaultSorted={defaultSorted}
+          search
+        >
+          {(props) => (
+            <div>
+              <Row>
+                <Col>
+                  <Link to="/create">
+                    <Button variant="dark" className="mr-2">
+                      <FontAwesomeIcon icon={faUserPlus} /> Create User
+                    </Button>
+                  </Link>{" "}
+                </Col>
+
+                <Col>
+                  <div className="float-end">
+                    <SearchBar
+                      {...props.searchProps}
+                      placeholder="Search ..."
+                      style={{ marginBottom: "10px" }}
+                    />
+                  </div>
+                </Col>
+              </Row>
+
+              <BootstrapTable
+                {...props.baseProps}
+                pagination={paginationFactory()}
               />
             </div>
-
-            <BootstrapTable
-              {...props.baseProps}
-              pagination={paginationFactory()}
-            />
-          </div>
-        )}
-      </ToolkitProvider>
+          )}
+        </ToolkitProvider>
+      ) : (
+        <div className="text-center">
+          {props.errorUsersList ? (
+            <h4> {props.errorUsersList} </h4>
+          ) : (
+            <Spinner animation="grow" />
+          )}
+        </div>
+      )}
     </Container>
   );
 };
 
-export default TableComponent;
+export default connect(mapStateToProps, null)(TableComponent);
