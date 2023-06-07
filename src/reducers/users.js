@@ -1,10 +1,12 @@
-import { GET_USERS_LIST, GET_USER_DETAIL } from "../actions/userAction";
+import { GET_USERS_LIST, GET_USER_DETAIL,POST_USER_CREATE } from "../actions/userAction";
 
 let initialState = {
   getUsersList: false,
   errorUsersList: false,
   getUserDetail: false,
   errorUserDetail: false,
+  getResponseDataUser:false,
+  errorResponseDataUser:false,
   brandTitle: "DAL Tour & Travel CMS ",
 };
 
@@ -23,6 +25,13 @@ const users = (state = initialState, action) => {
         getUserDetail: action.payload.data,
         errorUserDetail: action.payload.errorMessage,
       };
+
+      case POST_USER_CREATE:
+        return {
+          ...state,
+          getResponseDataUser: action.payload.data,
+          errorResponseDataUser: action.payload.errorMessage,
+        };
 
     default:
       return state;
